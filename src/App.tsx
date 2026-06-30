@@ -1,8 +1,12 @@
+import { BrowserRouter, Route } from "react-router"
+
 function App() {
   return (
-    <div>
-      
-    </div>
+    <BrowserRouter>
+      <Route>
+        
+      </Route>
+    </BrowserRouter>
   )
 }
 
