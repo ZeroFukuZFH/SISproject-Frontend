@@ -28,8 +28,8 @@ function App() {
         </Route>
 
         <Route element={<ProjectLayout/>}>
-          <Route path="/team/:slug/project/paper/:slug" element={<ProjectPage/>}/>
-          <Route path="/team/:slug/project/documentation/:slug" element={<ProjectPage/>}/>
+          <Route path="/project/paper/:slug" element={<ProjectPage/>}/>
+          <Route path="/project/documentation/:slug" element={<ProjectPage/>}/>
         </Route>
 
       </Routes>
