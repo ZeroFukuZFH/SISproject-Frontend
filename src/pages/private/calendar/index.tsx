@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { Sidebar } from './components/Sidebar';
 import { CalendarSidebar } from './components/CalendarSidebar';
 import { MainCalendar } from './components/MainCalendar';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -55,7 +54,6 @@ const CalendarPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#15101a] flex">
-      <Sidebar />
       <CalendarSidebar
         selectedGroup={selectedGroup}
         onSelectGroup={setSelectedGroup}
