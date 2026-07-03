@@ -21,8 +21,8 @@ function App() {
         
         <Route element={<LandingLayout/>}>
           <Route path="/dashboard" element={<DashboardPage/>}/>
-          <Route path="/team/:slug" element={<TeamPage/>}/>
-          <Route path="/chat/:slug" element={<ChatPage/>}/>
+          <Route path="/team" element={<TeamPage/>}/>
+          <Route path="/chat" element={<ChatPage/>}/>
           <Route path="/calendar" element={<CalendarPage/>}/>
           <Route path="/notifications" element={<NotificationsPage/>}/>
         </Route>
