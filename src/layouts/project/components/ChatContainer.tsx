@@ -1,5 +1,5 @@
 import useProjectLayout from "../hooks/useProjectLayout/hook";
-import ChatBox from "./ChatBox";
+import ChatBox, { ChatBoxBody, ChatBoxHeader } from "./ChatBox";
 import TeamChat from "./TeamChat";
 import Chatbot from "./Chatbot";
 import ChatButton from "./ChatButton";
@@ -11,13 +11,23 @@ function ChatContainer() {
         <div className="flex flex-col items-end gap-4 fixed bottom-20 right-20 z-10 text-white">
             {(toggleChat.messages) && (
                 <ChatBox>
-                    <TeamChat/>
+                    <ChatBoxHeader>
+                        <h3 className="text-white font-semibold">Team Chat</h3>
+                    </ChatBoxHeader>
+                    <ChatBoxBody>
+                        <TeamChat/>
+                    </ChatBoxBody>
                 </ChatBox>
             )}
 
             {(toggleChat.chatbot) && (
                 <ChatBox>
-                    <Chatbot/>
+                    <ChatBoxHeader>
+                        <h3 className="text-white font-semibold">S.I.S.t.e.r</h3>
+                    </ChatBoxHeader>
+                    <ChatBoxBody>
+                        <Chatbot/>
+                    </ChatBoxBody>
                 </ChatBox>
             )}
 
