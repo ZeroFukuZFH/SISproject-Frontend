@@ -6,7 +6,8 @@ import ChatButton from "./ChatButton";
 import { Bot, MessageCircle } from "lucide-react";
 
 function ChatContainer() {
-    const { toggleChat, setToggleChat } = useProjectLayout();
+    const { toggleChat, setToggleChat, documentationSettings } = useProjectLayout();
+    const { messages, sister } = documentationSettings
     return (
         <div className="flex flex-col items-end gap-4 fixed bottom-20 right-20 z-10 text-white">
             {(toggleChat.messages) && (
@@ -33,13 +34,13 @@ function ChatContainer() {
 
             <div className="flex flex-row items-center justify-center gap-4">
                 
-                <ChatButton name="messages" icon={MessageCircle} onClick={() => setToggleChat(prev => ({ chatbot: false, messages: !prev.messages }))}>
+                {messages && (<ChatButton name="messages" icon={MessageCircle} onClick={() => setToggleChat(prev => ({ chatbot: false, messages: !prev.messages }))}>
                     Messages
-                </ChatButton>
+                </ChatButton>)}
                 
-                <ChatButton icon={Bot} name="chatbot" onClick={() => setToggleChat(prev => ({ chatbot: !prev.chatbot, messages: false }))}>
+                { sister && (<ChatButton icon={Bot} name="chatbot" onClick={() => setToggleChat(prev => ({ chatbot: !prev.chatbot, messages: false }))}>
                     help me S.I.S.t.e.r im stuck!    
-                </ChatButton>
+                </ChatButton>)}
             </div>
         </div>
     );
