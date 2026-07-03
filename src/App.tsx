@@ -21,15 +21,15 @@ function App() {
         
         <Route element={<LandingLayout/>}>
           <Route path="/dashboard" element={<DashboardPage/>}/>
-          <Route path="/team/:slug" element={<TeamPage/>}/>
-          <Route path="/chat/:slug" element={<ChatPage/>}/>
+          <Route path="/team" element={<TeamPage/>}/>
+          <Route path="/chat" element={<ChatPage/>}/>
           <Route path="/calendar" element={<CalendarPage/>}/>
           <Route path="/notifications" element={<NotificationsPage/>}/>
         </Route>
 
         <Route element={<ProjectLayout/>}>
-          <Route path="/project/paper/:slug" element={<ProjectPage/>}/>
-          <Route path="/project/documentation/:slug" element={<ProjectPage/>}/>
+          <Route path="team/:teamId/project/paper/:projectId" element={<ProjectPage/>}/>
+          <Route path="team/:teamId/project/documentation/:projectId" element={<ProjectPage/>}/>
         </Route>
 
       </Routes>
