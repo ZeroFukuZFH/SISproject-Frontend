@@ -1,170 +1,79 @@
+import React, { useState, useMemo } from 'react';
+import { Sidebar } from './components/Sidebar';
+import { CalendarSidebar } from './components/CalendarSidebar';
+import { MainCalendar } from './components/MainCalendar';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { getDaysInMonth } from './utils/calendarUtils';
+import type { Group, CalendarEvent, WeekDay } from './types';
 
+const CalendarPage: React.FC = () => {
+  const [selectedGroup, setSelectedGroup] = useLocalStorage<Group>('calendarSelectedGroup', 'ALL');
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentMonthView, setCurrentMonthView] = useState(() => new Date());
 
-import React, { useState, useEffect, useRef } from 'react';
-import './index.css';
+  // TODO: Replace with API data
+  const [events] = useState<CalendarEvent[]>([
+    { id: '1', title: 'Team Meeting', date: 23, month: 5, year: 2026, time: '10:00 AM' },
+    { id: '2', title: 'Project Review', date: 24, month: 5, year: 2026, time: '2:00 PM' },
+    { id: '3', title: 'Client Call', date: 25, month: 5, year: 2026, time: '11:30 AM', completed: true },
+    { id: '4', title: 'Design Review', date: 15, month: 5, year: 2026, time: '3:00 PM' },
+    { id: '5', title: 'Sprint Planning', date: 10, month: 5, year: 2026, time: '9:00 AM', completed: true },
+    { id: '6', title: 'Demo Day', date: 28, month: 5, year: 2026, time: '4:00 PM' },
+  ]);
 
-
-interface CalendarDay {
-  date: number;
-  day: string;
-  isToday: boolean;
-}
-
-type Group = 'ALL' | 'Group 1' | 'Group 2' | 'Group 3';
-
-
-function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      console.error('Error reading localStorage:', error);
-      return initialValue;
+  const weekDays = useMemo((): WeekDay[] => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const today = new Date();
+    const daysInMonth = getDaysInMonth(year, month);
+    const result: WeekDay[] = [];
+    for (let date = 1; date <= daysInMonth; date++) {
+      const dayEvents = events
+        .filter(e => e.date === date && e.month === month && e.year === year)
+        .map(e => ({ id: e.id, title: e.title, time: e.time, completed: e.completed }));
+      result.push({
+        date,
+        isToday: date === today.getDate() && month === today.getMonth() && year === today.getFullYear(),
+        events: dayEvents.length > 0 ? dayEvents : undefined,
+      });
     }
-  });
+    return result;
+  }, [currentDate, events]);
 
-  const setValue = (value: T) => {
-    try {
-      setStoredValue(value);
-      window.localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.error('Error writing to localStorage:', error);
-    }
+  const navigateMonth = (offset: number) => {
+    const newDate = new Date(currentDate);
+    newDate.setMonth(currentDate.getMonth() + offset);
+    setCurrentDate(newDate);
+    setCurrentMonthView(newDate);
   };
 
-  return [storedValue, setValue];
-}
+  const goToToday = () => {
+    const today = new Date();
+    setCurrentDate(today);
+    setCurrentMonthView(today);
+  };
 
-// --- Components ---
-
-// 1. Fragment and Destructuring example
-const DateRange: React.FC<{ start: string; end: string; year: number }> = ({ start, end, year }) => {
   return (
-    <>
-      <span className="date-range">
-        <i className="far fa-calendar-alt" style={{ marginRight: '0.4rem' }}></i>
-        {start}–{end}, {year}
-      </span>
-    </>
-  );
-};
-
-// 2. Group Tags with conditional classes
-const GroupTags: React.FC<{ groups: Group[]; selected: Group; onSelect: (g: Group) => void }> = ({
-  groups,
-  selected,
-  onSelect,
-}) => {
-  return (
-    <div className="group-tags">
-      {groups.map((group) => {
-        // Ternary + AND for conditional styling
-        const isAll = group === 'ALL';
-        const isSelected = group === selected;
-        return (
-          <span
-            key={group}
-            className={`group-tag ${isAll ? 'all' : ''} ${isSelected ? 'selected' : ''}`}
-            onClick={() => onSelect(group)}
-            style={{ cursor: 'pointer' }}
-          >
-            <i className="fas fa-circle"></i> {group}
-            {/* Conditional AND: show a checkmark if selected */}
-            {isSelected && <i className="fas fa-check" style={{ marginLeft: '0.3rem', color: '#4f46e5' }}></i>}
-          </span>
-        );
-      })}
+    <div className="min-h-screen bg-[#15101a] flex">
+      <Sidebar />
+      <CalendarSidebar
+        selectedGroup={selectedGroup}
+        onSelectGroup={setSelectedGroup}
+        currentDate={currentMonthView}
+        onMonthChange={(date) => {
+          setCurrentMonthView(date);
+          setCurrentDate(date);
+        }}
+      />
+      <MainCalendar
+        weekDays={weekDays}
+        currentDate={currentDate}
+        onPrev={() => navigateMonth(-1)}
+        onNext={() => navigateMonth(1)}
+        onToday={goToToday}
+      />
     </div>
   );
 };
 
-// 3. Weekday list with iterators and destructuring
-const WeekdayList: React.FC<{ days: CalendarDay[] }> = ({ days }) => {
-  return (
-    <div className="weekdays">
-      {days.map(({ date, day, isToday }) => {
-        // Conditional: if isToday, add a special class and a dot
-        return (
-          <div key={date} className={`weekday-row ${isToday ? 'today-indicator' : ''}`}>
-            <span className="weekday-name">{day}</span>
-            <span className="weekday-number">
-              {date}
-              {isToday && <span className="today-dot"></span>}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-// 4. Main Calendar Page Component
-const CalendarPage: React.FC = () => {
-  // Custom hook: persist selected group in localStorage
-  const [storedGroup, setStoredGroup] = useLocalStorage<Group>('calendarSelectedGroup', 'ALL');
-  
-  // useState for selected group - initialize directly from stored value
-  const [selectedGroup, setSelectedGroup] = useState<Group>(() => storedGroup || 'ALL');
-
-  // useRef to track if it's the first render (just for demo)
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (firstRender.current) {
-      console.log('CalendarPage mounted (useEffect)');
-      firstRender.current = false;
-    }
-  }, []);
-
-  // Update localStorage when selection changes (no setState in effect!)
-  useEffect(() => {
-    setStoredGroup(selectedGroup);
-  }, [selectedGroup, setStoredGroup]);
-
-  // Data (iterators and destructuring in map)
-  const weekDays: CalendarDay[] = [
-    { date: 23, day: 'Tuesday', isToday: true },
-    { date: 24, day: 'Wednesday', isToday: false },
-    { date: 25, day: 'Thursday', isToday: false },
-    { date: 26, day: 'Friday', isToday: false },
-  ];
-
-  const groups: Group[] = ['ALL', 'Group 1', 'Group 2', 'Group 3'];
-
-  return (
-    <div className="calendar-card">
-      {/* Header */}
-      <div className="calendar-header">
-        <span className="year">2026</span>
-        <span className="today-badge">
-          <i className="fas fa-circle" style={{ fontSize: '0.5rem', color: '#4f46e5' }}></i>
-          Today
-        </span>
-      </div>
-
-      {/* Date Range (uses component with destructuring) */}
-      <DateRange start="June 22" end="June 26" year={2026} />
-
-      {/* Groups (uses component with iterators and conditional) */}
-      <div className="groups-section">
-        <div className="groups-label">
-          <i className="fas fa-users" style={{ marginRight: '0.3rem', fontSize: '0.7rem' }}></i> Groups
-        </div>
-        <GroupTags groups={groups} selected={selectedGroup} onSelect={setSelectedGroup} />
-      </div>
-
-      {/* Weekdays (uses component with iterators) */}
-      <WeekdayList days={weekDays} />
-
-      {/* Footer */}
-      <div className="calendar-footer">
-        <span>
-          <i className="far fa-clock"></i> week 26 · 2026
-        </span>
-      </div>
-    </div>
-  );
-};
-
-// --- Export (default export) ---
 export default CalendarPage;
