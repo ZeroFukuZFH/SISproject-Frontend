@@ -6,6 +6,7 @@ export const authService = {
             headers: { 'Content-Type': 'application/json'},
             method:"POST",
             body: JSON.stringify(loginRequest),
+            credentials:'include'
         })
         
         if(!response.ok){
@@ -20,6 +21,7 @@ export const authService = {
             headers: { 'Content-Type': 'application/json'},
             method:"POST",
             body: JSON.stringify(registerRequest),
+            credentials:'include'
         })
         
         if(!response.ok){
