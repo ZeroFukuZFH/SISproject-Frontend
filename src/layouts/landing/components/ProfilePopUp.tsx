@@ -3,7 +3,8 @@ import useProfilePopup from "../hooks/useProfilePopup/hook"
 import { Link } from "react-router"
 
 function ProfilePopUp(){
-    const { activityStatus,handleStatusChange, signOut, handleSignOut,email, username } = useProfilePopup()
+    const { currentUser,handleStatusChange, signOut, handleSignOut} = useProfilePopup()
+    const { activityStatus,email, username } = currentUser
     return (
         <div className="p-2 rounded-2xl border border-[#645D68] bg-[#17161D] w-80 z-10 fixed bottom-20 left-20 text-white">
             <div className="flex flex-row gap-2 items-center px-4 py-2">

@@ -1,23 +1,40 @@
 
-import { useState, type ChangeEvent } from "react"
+import { useEffect, useState, type ChangeEvent } from "react"
+import landingService from "../../../../services/landingService"
+
 
 function useProfilePopup(){
-    const email = "" // TODO: create response 
-    const username = "" // TODO: create response 
-    const [signOut, setSignOut] = useState(false)
-    const [activityStatus, setActivityStatus] = useState('available') // TODO: add as response type later ( 'available' | 'away' | 'do not disturb' | 'offline' )
+
+    const [currentUser,setCurrentUser] = useState({
+        username: '',
+        email: '',
+        activityStatus: 'offline'
+    })
+
+    const [signOut, setSignOut] = useState(false) // TODO: change later, add actual signout functionality on backend too
+
+    useEffect(()=>{
+        const load = async () => {
+            const response = await landingService.me()
+            setCurrentUser({...response})
+            console.log(response)
+        }   
+        load()
+
+        // TODO: handle errors later
+    },[])
+
     const handleStatusChange = (e : ChangeEvent<HTMLButtonElement>) => { 
         const { name } = e.target;
-        setActivityStatus(name)
+        // TODO: fix bugs and allow database update
+        setCurrentUser(prev => ({...prev,activityStatus:name}))
     }
     const handleSignOut = () => {
         setSignOut(prev => !prev)
     }
     
     return {
-        email,
-        username,
-        activityStatus,
+        currentUser,
         handleStatusChange,
         signOut,
         handleSignOut,
