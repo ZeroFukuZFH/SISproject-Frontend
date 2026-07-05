@@ -10,14 +10,17 @@ import NotificationsPage from "./pages/private/notifications"
 import LandingLayout from "./layouts/landing"
 import ProjectLayout from "./layouts/project"
 import AuthProvider from "./hooks/useAuth/provider"
+import AuthLayout from "./layouts/auth"
 
 function App() {
   return (
     <AuthProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage/>} />
-        <Route path="/register" element={<RegisterPage/>}/>
+        <Route element={<AuthLayout/>}>
+          <Route path="/login" element={<LoginPage/>} />
+          <Route path="/register" element={<RegisterPage/>}/>
+        </Route>
         
         <Route element={<LandingLayout/>}>
           <Route path="/dashboard" element={<DashboardPage/>}/>

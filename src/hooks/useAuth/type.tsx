@@ -1,13 +1,6 @@
 import type { Dispatch, SetStateAction } from "react"
-
+import type { AuthResponse } from "../../services/authService"
 export interface AuthContextType {
     auth: AuthResponse,
     setAuth: Dispatch<SetStateAction<AuthResponse>>
-}
-
-export type AuthResponse = {
-    accessToken: string,
-    refreshToken: string,
-    username: string,
-    email: string,
 }
