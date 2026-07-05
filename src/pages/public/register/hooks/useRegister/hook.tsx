@@ -51,9 +51,8 @@ function useRegister(){
             setRegister({ ...register, status: 'loading' })
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            const fetchedData = await authService.register({...register})
+            await authService.register({...register})
             
-            console.log(fetchedData.message)
             setRegister({ ...register, status: 'success' })
             
             navigate("/dashboard")
