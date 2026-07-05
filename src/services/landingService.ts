@@ -2,18 +2,17 @@ import { API_BASE_URL } from "../utils/http"
 import { HttpError } from "../utils/http"
 
 const landingService = {
-    logout: async ():Promise<LogoutResponse> => {
-        const response = await fetch(API_BASE_URL + "/api/auth/logout",{
-            headers: { 'Content-Type': 'application/json'},
-            method:"POST",
-            credentials:'include'
-        })
-                
-        if(!response.ok){
-            throw new HttpError(response.status,"Unable to Logout")
-        }
-        const data = await response.json() as LogoutResponse
-        return data
+    logout: async ():Promise<void> => {
+        
+            const response = await fetch(API_BASE_URL + "/api/auth/logout",{
+                headers: { 'Content-Type': 'application/json'},
+                method:"POST",
+                credentials:'include'
+            })
+            if(!response.ok){
+                throw new HttpError(response.status,response.statusText);
+            }
+            
     },
     me: async ():Promise<MeResponse> => {
         const response = await fetch(API_BASE_URL + "/api/auth/me",{

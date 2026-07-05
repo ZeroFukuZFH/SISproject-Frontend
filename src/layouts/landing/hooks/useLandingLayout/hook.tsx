@@ -1,15 +1,12 @@
-import { useState } from "react"
+import { useContext } from "react"
+import { LandingLayoutContext } from "./context"
 
 function useLandingLayout(){
-    const [togglePopup, setTogglePopup] = useState(false)
-    const handleToggle = () => {
-        setTogglePopup(prev => !prev)
+    const context = useContext(LandingLayoutContext)
+    if(!context){
+        throw new Error("useLanding should be used within a LandingProvider")
     }
-
-    return {
-        togglePopup,
-        handleToggle
-    }
+    return context
 }
 
 export default useLandingLayout
