@@ -1,8 +1,8 @@
-import { useContext } from "react"
+import { use } from "react"
 import { LandingLayoutContext } from "./context"
 
 function useLandingLayout(){
-    const context = useContext(LandingLayoutContext)
+    const context = use(LandingLayoutContext)
     if(!context){
         throw new Error("useLanding should be used within a LandingProvider")
     }
