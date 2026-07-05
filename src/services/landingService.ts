@@ -12,7 +12,7 @@ const landingService = {
             if(!response.ok){
                 throw new HttpError(response.status,response.statusText);
             }
-            
+
     },
     me: async ():Promise<MeResponse> => {
         const response = await fetch(API_BASE_URL + "/api/auth/me",{
@@ -30,10 +30,6 @@ const landingService = {
 } 
 
 export default landingService
-
-type LogoutResponse = {
-    status: string
-}
 
 type MeResponse = {
     username: string,
