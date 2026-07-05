@@ -9,14 +9,15 @@ import CalendarPage from "./pages/private/calendar"
 import NotificationsPage from "./pages/private/notifications"
 import LandingLayout from "./layouts/landing"
 import ProjectLayout from "./layouts/project"
-import AuthProvider from "./hooks/useAuth/provider"
 import AuthLayout from "./layouts/auth"
+import HeroPage from "./pages/public/hero"
 
 function App() {
   return (
-    <AuthProvider>
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<HeroPage/>}/>
+
         <Route element={<AuthLayout/>}>
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/register" element={<RegisterPage/>}/>
@@ -37,7 +38,6 @@ function App() {
 
       </Routes>
     </BrowserRouter>
-    </AuthProvider>
   )
 }
 
