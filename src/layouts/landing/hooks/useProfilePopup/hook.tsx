@@ -1,23 +1,32 @@
 
 import { useEffect, useState, type ChangeEvent } from "react"
-import landingService from "../../../../services/landingService"
+import landingService, { type MeResponse, defaultMeResponse } from "../../../../services/landingService"
+import { HttpError } from "../../../../utils/http"
 
-
+type ProfilePopUp = {
+    data: MeResponse
+    status: 'loading' | 'error' | 'idle'
+}
 function useProfilePopup(){
 
-    const [currentUser,setCurrentUser] = useState({
-        username: '',
-        email: '',
-        activityStatus: 'offline'
+    const [currentUser,setCurrentUser] = useState<ProfilePopUp>({
+        data: defaultMeResponse,
+        status: 'idle'
     })
     useEffect(()=>{
         const load = async () => {
-            const response = await landingService.me()
-            setCurrentUser({...response})
+            try {
+                setCurrentUser(prev => ({...prev,status:'loading'}))
+                await new Promise(resolve => setTimeout(resolve, 1000)); 
+                const response = await landingService.me()
+                setCurrentUser({data:response, status:'idle'})
+            } catch(error: unknown){
+                if(error instanceof HttpError){
+                    setCurrentUser({data:defaultMeResponse, status:'error'})
+                }
+            }
         }   
         load()
-
-        // TODO: handle errors later
     },[])
 
     const handleStatusChange = (e : ChangeEvent<HTMLButtonElement>) => { 

@@ -4,7 +4,7 @@ import { HttpError } from "../utils/http"
 const landingService = {
     logout: async ():Promise<void> => {
         
-            const response = await fetch(API_BASE_URL + "/api/auth/logout",{
+            const response = await fetch(API_BASE_URL + "/api/landing/logout",{
                 headers: { 'Content-Type': 'application/json'},
                 method:"POST",
                 credentials:'include'
@@ -15,7 +15,7 @@ const landingService = {
 
     },
     me: async ():Promise<MeResponse> => {
-        const response = await fetch(API_BASE_URL + "/api/auth/me",{
+        const response = await fetch(API_BASE_URL + "/api/landing/me",{
             headers: { 'Content-Type': 'application/json'},
             method:"GET",
             credentials:'include'
@@ -31,9 +31,15 @@ const landingService = {
 
 export default landingService
 
-type MeResponse = {
+export type MeResponse = {
     username: string,
     email: string,
     activityStatus: 'available' | 'away' | 'do not disturb' | 'offline'
+}
+
+export const defaultMeResponse : MeResponse = {
+    username: '',
+    email: '',
+    activityStatus: 'offline'
 }
 

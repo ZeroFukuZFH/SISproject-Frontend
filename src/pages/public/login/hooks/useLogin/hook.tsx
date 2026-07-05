@@ -41,9 +41,7 @@ function useLogin(){
             setLogin({...login,status:'loading'})
             await new Promise(resolve => setTimeout(resolve, 1000)); 
         
-            const fetchedResponse = await authService.login({...login}) // this will throw an error if unsuccessful terminating the process
-            
-            console.log(fetchedResponse.message)
+            await authService.login({...login}) 
             
             setLogin({...login,status:'success'})
             

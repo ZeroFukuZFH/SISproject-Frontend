@@ -1,20 +1,23 @@
-import { LogOut, UserCircle } from "lucide-react"
+import { CircleAlert, LogOut, UserCircle } from "lucide-react"
 import useProfilePopup from "../hooks/useProfilePopup/hook"
 import useLandingLayout from "../hooks/useLandingLayout/hook"
+import LoadingSpinner from "../../../components/LoadingSpinner"
 
 function ProfilePopUp(){
     const { currentUser,handleStatusChange } = useProfilePopup()
     const { handleToggleSignOut } = useLandingLayout()
-    const { activityStatus,email, username } = currentUser
+    const { activityStatus,email, username } = currentUser.data
     return (
         <div className="p-2 rounded-2xl border border-[#645D68] bg-[#17161D] w-80 z-10 fixed bottom-20 left-20 text-white">
-            <div className="flex flex-row gap-2 items-center px-4 py-2">
-                <UserCircle size={40}/> {/* TODO: change to actual user profile */}
-                <div className="flex flex-col gap-2">
-                    <h1 className="font-bold">{username === "" ? 'default user' : username }</h1>
-                    <p className="font-extralight text-xs">{email === "" ? 'default@user.com' : email}</p>
+            {currentUser.status === 'loading' ? (<ProfileLoading/>) : currentUser.status === 'error' ? (<ProfileError/>) : (
+                <div className="flex flex-row gap-2 items-center px-4 py-2 w-full">
+                    <UserCircle size={40}/> {/* TODO: change to actual user profile */}
+                    <div className="flex flex-col gap-2">
+                        <h1 className="font-bold">{username === "" ? 'default user' : username }</h1>
+                        <p className="font-extralight text-xs">{email === "" ? 'default@user.com' : email}</p>
+                    </div>
                 </div>
-            </div>
+            )}
             <div>
                 <ProfilePopUpButton name={'available'} onClick={handleStatusChange}>
                     <span className="flex items-center gap-4">
@@ -72,6 +75,22 @@ function ProfilePopUpButton({...props}){
     )
 }
 
+function ProfileError(){
+    return (
+        <div className="flex flex col gap-2 justify-center items-center px-4 py-2 w-full">
+            <CircleAlert color="red"/>
+            <h1>failed to fetch data</h1>
+        </div>
+    )
+}
+
+function ProfileLoading(){
+    return (
+        <div className="flex flex col gap-2 justify-center items-center px-4 py-2 w-full">
+            <LoadingSpinner/>
+        </div>
+    )
+}
 
 
 export default ProfilePopUp
