@@ -1,4 +1,7 @@
 import { useState, type ChangeEvent } from "react"
+import { useNavigate } from "react-router"
+import { authService } from "../../../../../services/authService"
+import { HttpError } from "../../../../../utils/http"
 
 type LoginState = {
     email: string,
@@ -13,6 +16,7 @@ const defaultLoginState : LoginState = {
 }
 
 function useLogin(){
+    const navigate = useNavigate()
     const [login, setLogin] = useState(defaultLoginState)
     const [errorMessage, setErrorMessage] = useState("")
     
@@ -34,22 +38,26 @@ function useLogin(){
                 throw new Error("email must be valid")
             }
 
-            const hasUppercase = /[A-Z]/.test(password);
-            const hasSpecial = /[^A-Za-z0-9]/.test(password);
-
-            if (password.length < 12 || !hasUppercase || !hasSpecial) {
-                throw new Error("password must be at least 12 characters and contain atleast one special and uppercase character");
-            }
-            
             setLogin({...login,status:'loading'})
-
             await new Promise(resolve => setTimeout(resolve, 1000)); 
-
+        
+            const fetchedResponse = await authService.login({...login}) // this will throw an error if unsuccessful terminating the process
+            
+            console.log(fetchedResponse.message)
+            
             setLogin({...login,status:'success'})
+            
+            navigate('/dashboard')
+            
         } catch (error: unknown) {
             if(error instanceof Error){
                 setErrorMessage(error.message)
                 setLogin({...login, status:'error'})
+            }
+
+            if(error instanceof HttpError){
+                setErrorMessage(error.status + " " + error.message)
+                setLogin({ ...login, status: 'error' })
             }
             return
         }

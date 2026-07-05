@@ -33,7 +33,7 @@ function LoginPage() {
                     onChange={handleChange}
                 />
 
-                <button onClick={handleSubmit} className="cursor-pointer bg-violet-500 text-white rounded-md w-full px-4 py-2 justify-center items-center">
+                <button onClick={handleSubmit} className="cursor-pointer flex bg-violet-500 text-white rounded-md w-full px-4 py-2 justify-center items-center">
                     {login.status === 'loading' ? <LoadingSpinner/> : "Login"}
                 </button>
 

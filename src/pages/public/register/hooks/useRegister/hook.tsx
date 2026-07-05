@@ -1,4 +1,7 @@
 import { useState, type ChangeEvent } from "react"
+import { authService } from "../../../../../services/authService"
+import { useNavigate } from "react-router"
+import { HttpError } from "../../../../../utils/http"
 
 type RegisterState = {
     username: string,
@@ -15,6 +18,7 @@ const defaultRegisterState : RegisterState = {
 }
 
 function useRegister(){
+    const navigate = useNavigate()
     const [register, setRegister] = useState(defaultRegisterState)
     const [errorMessage, setErrorMessage] = useState("")
     
@@ -45,16 +49,25 @@ function useRegister(){
             }
             
             setRegister({ ...register, status: 'loading' })
-            await new Promise(resolve => setTimeout(resolve, 1000)); 
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const fetchedData = await authService.register({...register})
             
+            console.log(fetchedData.message)
             setRegister({ ...register, status: 'success' })
             
+            navigate("/dashboard")
+
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setErrorMessage(error.message)
                 setRegister({ ...register, status: 'error' })
             }
-            return
+
+            if(error instanceof HttpError){
+                setErrorMessage(error.status + " " + error.message)
+                setRegister({ ...register, status: 'error' })
+            }
         }
     }
 
