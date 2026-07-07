@@ -1,5 +1,5 @@
 import useProjectLayout from "../hooks/useProjectLayout/hook";
-import { X, SendHorizonal } from "lucide-react";
+import { X } from "lucide-react";
 import { defaultChatState } from "../hooks/useProjectLayout/types";
 
 export function ChatBoxHeader({ children }: { children?: React.ReactNode }){
@@ -29,18 +29,6 @@ function ChatBox({ children }: { children?: React.ReactNode }) {
             
             {children}
 
-            <div className="p-4 border-t border-[#645D68]">
-                <div className="flex flex-row gap-2 items-center">
-                    <input 
-                        type="text" 
-                        placeholder="Start Typing..." 
-                        className="flex-1 bg-white/5 border border-[#645D68] outline-none rounded-full px-4 py-2 text-white placeholder-white/40 focus:border-purple-500 transition"
-                    />
-                    <button className="cursor-pointer p-2 rounded-full bg-purple-500 hover:bg-purple-600 transition">
-                        <SendHorizonal size={20} color="white" />
-                    </button>
-                </div>
-            </div>
         </div>
     );
 }

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
+import type { ChatMessage } from "../../../../services/chatService"
 
 type ChatState = {
     status : 'loading'| 'success' | 'error',
-    chats: any[]
+    chats: ChatMessage[]
 }
 
 const defaultChatState : ChatState = {
@@ -10,7 +11,8 @@ const defaultChatState : ChatState = {
     chats: []
 }
 
-function useTeamChat(teamId: string){
+function useTeamChat(){
+    // TODO: teamId must be from current params
     const [currentState, setCurrentState] = useState<ChatState>(defaultChatState)
     
     useEffect(()=> {
@@ -18,11 +20,6 @@ function useTeamChat(teamId: string){
             await new Promise(resolve => setTimeout(resolve, 1000)); 
             try {
                 //
-                const fetchedChats: any[] = []
-                
-                if(fetchedChats){
-                    setCurrentState({status:'success',chats:fetchedChats})
-                }
             } catch (error) {
             //
             }
