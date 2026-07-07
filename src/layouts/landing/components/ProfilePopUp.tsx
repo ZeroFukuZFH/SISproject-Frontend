@@ -1,18 +1,23 @@
-import { LogOut, UserCircle } from "lucide-react"
+import { CircleAlert, LogOut, UserCircle } from "lucide-react"
 import useProfilePopup from "../hooks/useProfilePopup/hook"
-import { Link } from "react-router"
+import useLandingLayout from "../hooks/useLandingLayout/hook"
+import LoadingSpinner from "../../../components/LoadingSpinner"
 
 function ProfilePopUp(){
-    const { activityStatus,handleStatusChange, signOut, handleSignOut,email, username } = useProfilePopup()
+    const { currentUser,handleStatusChange } = useProfilePopup()
+    const { handleToggleSignOut } = useLandingLayout()
+    const { activityStatus,email, username } = currentUser.data
     return (
         <div className="p-2 rounded-2xl border border-[#645D68] bg-[#17161D] w-80 z-10 fixed bottom-20 left-20 text-white">
-            <div className="flex flex-row gap-2 items-center px-4 py-2">
-                <UserCircle size={40}/> {/* TODO: change to actual user profile */}
-                <div className="flex flex-col gap-2">
-                    <h1 className="font-bold">{username === "" ? 'default user' : username }</h1>
-                    <p className="font-extralight text-xs">{email === "" ? 'default@user.com' : email}</p>
+            {currentUser.status === 'loading' ? (<ProfileLoading/>) : currentUser.status === 'error' ? (<ProfileError/>) : (
+                <div className="flex flex-row gap-2 items-center px-4 py-2 w-full">
+                    <UserCircle size={40}/> {/* TODO: change to actual user profile */}
+                    <div className="flex flex-col gap-2">
+                        <h1 className="font-bold">{username === "" ? 'default user' : username }</h1>
+                        <p className="font-extralight text-xs">{email === "" ? 'default@user.com' : email}</p>
+                    </div>
                 </div>
-            </div>
+            )}
             <div>
                 <ProfilePopUpButton name={'available'} onClick={handleStatusChange}>
                     <span className="flex items-center gap-4">
@@ -46,25 +51,8 @@ function ProfilePopUp(){
                     {activityStatus === 'offline' && <StatusCapsule/>}
                 </ProfilePopUpButton>
 
-                {signOut && (
-                    <div className="fixed z-20 w-screen h-screen bg-black/50 bottom-0 top-0 left-0 right-0 justify-center items-center flex">
-                        <div className="flex flex-col gap-4 border border-[#645D68] bg-[#17161D] p-4 rounded-xl w-100 h-60 items-center justify-center">
-                            <h1>Are you sure you want to sign out?</h1>
-                            <div className="flex flex-row gap-2">
-                                <Link to={"/login"} className="flex rounded-2xl bg-[#6C1CD7] px-4 py-2 w-25 items-center justify-center">
-                                    Yes
-                                </Link>
-
-                                <button onClick={handleSignOut} className="flex rounded-2xl border border-[#6C1CD7] px-4 py-2 w-25 cursor-pointer items-center justify-center">
-                                    No
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-                )}
                 <button 
-                    onClick={handleSignOut}
+                    onClick={handleToggleSignOut}
                     className="text-[#FF0202] text-xs flex flex-row justify-between hover:bg-[#FF0202]/25 rounded-md w-full cursor-pointer px-4 py-2 gap-2 items-center h-12">
                     <h1> Sign Out </h1> <LogOut/>
                 </button>
@@ -86,5 +74,23 @@ function ProfilePopUpButton({...props}){
         <button {...props} className="flex flex-row justify-between text-xs hover:bg-[#6C1CD7]/50 rounded-md w-full cursor-pointer px-4 py-2 gap-2 items-center h-10">{props.children}</button>
     )
 }
+
+function ProfileError(){
+    return (
+        <div className="flex flex col gap-2 justify-center items-center px-4 py-2 w-full">
+            <CircleAlert color="red"/>
+            <h1>failed to fetch data</h1>
+        </div>
+    )
+}
+
+function ProfileLoading(){
+    return (
+        <div className="flex flex col gap-2 justify-center items-center px-4 py-2 w-full">
+            <LoadingSpinner/>
+        </div>
+    )
+}
+
 
 export default ProfilePopUp
