@@ -1,9 +1,14 @@
 import useTeamChat from "../hooks/useTeamChat/hook"
 import LoadingSpinner from "../../../components/LoadingSpinner"
 import { MessageCircleWarning } from "lucide-react"
+import { ChatBoxHeader, ChatBoxBody } from "./ChatBox"
+import ChatControls from "./ChatControls"
+import { useParams } from "react-router"
 
 function TeamChat(){
-    const { currentState } = useTeamChat('') // TODO: use slug 
+    const { teamId, projectId } = useParams()
+    const { currentState, message, handleInput, handleSubmit } = useTeamChat(Number(teamId)) // TODO: use slug 
+
     if(currentState.status === 'loading'){
         return (
             <div className="flex flex-col gap-2 justify-center items-center h-full">
@@ -12,20 +17,26 @@ function TeamChat(){
         )
     }
     
-
     if(currentState.status === 'success'){
-        if(currentState.chats.length === 0){
-            return (
-                <div className="flex flex-col gap-2 justify-center items-center h-full text-center">
-                    <h1 className="font-bold">Your conversations will appear here</h1>
-                    <p className="font-extralight">Start a new chat or select a conversation from the list.</p>
-                </div>
+        return (
+                <>
+                <ChatBoxHeader>
+                    <h3 className="text-white font-semibold">Team Chat</h3>
+                </ChatBoxHeader>
+                <ChatBoxBody>
+                    {currentState.chats.length > 0 ? (
+                        <></>
+                    ):(
+                        <>
+                            <h1 className="font-bold">Your conversations will appear here</h1>
+                            <p className="font-extralight">Start a new chat or select a conversation from the list.</p>
+                        </>
+                    )}
+                </ChatBoxBody>
+                <ChatControls onChange={handleInput} value={message} onClick={handleSubmit} />
+                </> 
             )
-        } else {
-            return (
-                <>{/* TODO: implement display chats here */}</> 
-            )
-        }
+      
     }
 
     if(currentState.status === 'error'){

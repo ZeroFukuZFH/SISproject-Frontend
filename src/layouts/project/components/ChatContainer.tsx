@@ -1,12 +1,9 @@
 import useProjectLayout from "../hooks/useProjectLayout/hook";
-import ChatBox, { ChatBoxBody, ChatBoxHeader } from "./ChatBox";
-import TeamChat from "./TeamChat";
-import Chatbot from "./Chatbot";
+import ChatBox from "./ChatBox";
 import ChatButton from "./ChatButton";
 import { Bot, MessageCircle } from "lucide-react";
-import ChatControls from "./ChatControls";
-import useChats from "../../../hooks/useChats/hook";
-import { useState, type ChangeEvent } from "react";
+import TeamChat from "./TeamChat";
+import Chatbot from "./Chatbot";
 
 function ChatContainer() {
     const { toggleChat, setToggleChat, documentationSettings } = useProjectLayout();
@@ -15,11 +12,16 @@ function ChatContainer() {
     return (
         <div className="flex flex-col items-end gap-4 fixed bottom-20 right-20 z-10 text-white">
             {(toggleChat.messages) && (
-                <CurrentTeamChat/>
+                <ChatBox>
+                  <TeamChat/>
+                </ChatBox>
             )}
 
             {(toggleChat.chatbot) && (
-                <SisterChatBot/>
+                <ChatBox>
+                  
+                  <Chatbot/>
+                </ChatBox>
             )}
 
             <div className="flex flex-row items-center justify-center gap-4">
@@ -35,54 +37,6 @@ function ChatContainer() {
         </div>
     );
 }
-function CurrentTeamChat() {
-  const { handleSendMessage } = useChats()
-  const [message, setMessage] = useState("")
 
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    setMessage(value)
-  }
 
-  const handleSubmit = () => {
-    handleSendMessage(1, "albert", message) // TODO: FIX
-  }
-
-  return (
-    <ChatBox>
-      <ChatBoxHeader>
-        <h3 className="text-white font-semibold">Team Chat</h3>
-      </ChatBoxHeader>
-      <ChatBoxBody>
-        <TeamChat />
-      </ChatBoxBody>
-      <ChatControls onChange={handleInput} value={message} onClick={handleSubmit} />
-    </ChatBox>
-  )
-}
-
-function SisterChatBot() {
-  const [message, setMessage] = useState("")
-
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    setMessage(value)
-  }
-
-  const handleSubmit = () => {
-    // TODO
-  }
-
-  return (
-    <ChatBox>
-      <ChatBoxHeader>
-        <h3 className="text-white font-semibold">S.I.S.t.e.r</h3>
-      </ChatBoxHeader>
-      <ChatBoxBody>
-        <Chatbot />
-      </ChatBoxBody>
-      <ChatControls onChange={handleInput} value={message} onClick={handleSubmit} />
-    </ChatBox>
-  )
-}
 export default ChatContainer

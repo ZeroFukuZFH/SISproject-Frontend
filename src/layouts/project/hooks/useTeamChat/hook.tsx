@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ChangeEvent } from "react"
 import type { ChatMessage } from "../../../../services/chatService"
 
 type ChatState = {
@@ -11,15 +11,25 @@ const defaultChatState : ChatState = {
     chats: []
 }
 
-function useTeamChat(){
-    // TODO: teamId must be from current params
+function useTeamChat(teamId : number){
     const [currentState, setCurrentState] = useState<ChatState>(defaultChatState)
-    
+    const [message, setMessage] = useState("")
+
+    const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target
+        setMessage(value)
+    }
+
+    const handleSubmit = () => {
+        // TODO
+    }
+
     useEffect(()=> {
         const load = async () => {
             await new Promise(resolve => setTimeout(resolve, 1000)); 
             try {
                 //
+                setCurrentState(prev => ({...prev,status: 'success'}))
             } catch (error) {
             //
             }
@@ -29,7 +39,10 @@ function useTeamChat(){
     })
     
     return {
-        currentState
+        currentState,
+        message,
+        handleInput,
+        handleSubmit
     }
 }
 
