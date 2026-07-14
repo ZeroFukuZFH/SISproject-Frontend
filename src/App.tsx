@@ -15,6 +15,8 @@ import { useEffect } from "react"
 import landingService from "./services/landingService"
 import { HttpError } from "./utils/http"
 import { useNavigate } from "react-router"
+import ChatsProvider from "./hooks/useChats/provider"
+import useChats from "./hooks/useChats/hook"
 
 function App() {
   return (
@@ -27,7 +29,8 @@ function App() {
           <Route path="/register" element={<RegisterPage/>}/>
         </Route>
         
-        <Route element={<ProtectedRoutes />}>
+       <Route element={<TeamChatRoutes/>}>
+         <Route element={<ProtectedRoutes />}>
         
           <Route element={<LandingLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
@@ -42,14 +45,24 @@ function App() {
             <Route path="team/:teamId/project/documentation/:projectId" element={<ProjectPage />} />
           </Route>
         </Route>
+       </Route>
 
       </Routes>
     </BrowserRouter>
   )
 }
 
+function TeamChatRoutes(){
+  return (
+    <ChatsProvider>
+      <Outlet/>
+    </ChatsProvider>
+  )
+}
+
 function ProtectedRoutes(){
   const navigate = useNavigate()
+  const { handleDisconnect } = useChats()
   // TODO: add refresh token check later
   useEffect(()=>{
     const checkToken = async () => {
@@ -57,6 +70,7 @@ function ProtectedRoutes(){
         await landingService.me()
       } catch (error) {
         if(error instanceof HttpError){
+          handleDisconnect()
           navigate('/login')
         }
       }
@@ -67,7 +81,9 @@ function ProtectedRoutes(){
     return () => clearInterval(interval);
   },[navigate])
 
-  return <Outlet/>
+  return (
+      <Outlet/>
+  )
 }
 
 
